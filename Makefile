@@ -2,6 +2,8 @@
 CC = gcc
 CFLAGS = -Wall -Ichip8/include -Igame/include -Iraylib/include -g
 LDFLAGS = -Lraylib/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+VALGRIND = valgrind
+VALGRINDFLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt
 
 # Directories
 CHIP8_SRC_DIR := chip8/src
@@ -39,4 +41,7 @@ $(GAME_OBJ_DIR)/%.o: $(GAME_SRC_DIR)/%.c
 clean:
 	rm -rf $(EXECUTABLE) $(CHIP8_OBJ_DIR) $(GAME_OBJ_DIR)
 
-.PHONY: all clean
+valgrind:
+	$(VALGRIND) $(VALGRINDFLAGS) ./$(EXECUTABLE)
+
+.PHONY: all clean valgrind
