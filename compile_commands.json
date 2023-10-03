@@ -1,0 +1,55 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Ichip8/include",
+      "-Igame/include",
+      "-Iraylib/include",
+      "-g",
+      "-c",
+      "-o",
+      "chip8/obj/chip8.o",
+      "chip8/src/chip8.c"
+    ],
+    "directory": "/home/khaled/My-Projects/chip-8-emulator",
+    "file": "/home/khaled/My-Projects/chip-8-emulator/chip8/src/chip8.c",
+    "output": "/home/khaled/My-Projects/chip-8-emulator/chip8/obj/chip8.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Ichip8/include",
+      "-Igame/include",
+      "-Iraylib/include",
+      "-g",
+      "-c",
+      "-o",
+      "game/obj/game.o",
+      "game/src/game.c"
+    ],
+    "directory": "/home/khaled/My-Projects/chip-8-emulator",
+    "file": "/home/khaled/My-Projects/chip-8-emulator/game/src/game.c",
+    "output": "/home/khaled/My-Projects/chip-8-emulator/game/obj/game.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Ichip8/include",
+      "-Igame/include",
+      "-Iraylib/include",
+      "-g",
+      "chip8/obj/chip8.o",
+      "game/obj/game.o",
+      "-o",
+      "output",
+      "main.c"
+    ],
+    "directory": "/home/khaled/My-Projects/chip-8-emulator",
+    "file": "/home/khaled/My-Projects/chip-8-emulator/main.c",
+    "output": "/home/khaled/My-Projects/chip-8-emulator/output"
+  }
+]

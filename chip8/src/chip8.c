@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define SET_BIT(var, pos) ((var) |= (1 << (pos)))
+#define CLEAR_BIT(var, pos) ((var) &= ~(1 << (pos)))
+
 const uint8_t font[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -113,9 +116,9 @@ void chip8_parse_code(Chip8 *self) {
 
   printf("Address: 0x%04x, opcode: 0x%04x\n", old_pc, self->op_code);
 
-  if (self->op_code == 0x0000) {
-    self->pc = ENTRY_POINT;
-  }
+  /* if (self->op_code == 0x0000) { */
+  /*   self->pc = ENTRY_POINT; */
+  /* } */
 }
 
 void chip8_deinit(Chip8 *self) {}
@@ -223,7 +226,8 @@ void Chip8_OP_3xkk(Chip8 *self) {
     self->pc += 2;
   }
 
-  printf("Checking if Vx = kk, 0x%04x 0x%04x, skip next instruction if true.\n", self->registers[Vx], kk);
+  printf("Checking if Vx = kk, 0x%04x 0x%04x, skip next instruction if true.\n",
+         self->registers[Vx], kk);
 }
 
 /**
@@ -242,7 +246,9 @@ void Chip8_OP_4xkk(Chip8 *self) {
     self->pc += 2;
   }
 
-  printf("Checking if Vx != kk, 0x%04x 0x%04x, skip next instruction if true.\n", self->registers[Vx], kk);
+  printf(
+      "Checking if Vx != kk, 0x%04x 0x%04x, skip next instruction if true.\n",
+      self->registers[Vx], kk);
 }
 
 /**
@@ -261,7 +267,8 @@ void Chip8_OP_5xy0(Chip8 *self) {
     self->pc += 2;
   }
 
-  printf("Checking if Vx = Vy, 0x%04x 0x%04x, skip next instruction if true.\n", self->registers[Vx], self->registers[Vy]);
+  printf("Checking if Vx = Vy, 0x%04x 0x%04x, skip next instruction if true.\n",
+         self->registers[Vx], self->registers[Vy]);
 }
 
 /**
@@ -291,9 +298,10 @@ void Chip8_OP_7xkk(Chip8 *self) {
   uint8_t Vx = GET_NIBBLE(self->op_code, 2);
   uint8_t kk = self->op_code & 0x00FF;
 
-  self->registers[Vx] = self->registers[Vx] + kk;
+  self->registers[Vx] += kk;
 
-  printf("Register Vx 0x%04x + Value kk 0x%04x = 0x%04x.\n", self->registers[Vx] - kk, kk, self->registers[Vx]);
+  printf("Register Vx 0x%04x + Value kk 0x%04x = 0x%04x.\n",
+         self->registers[Vx] - kk, kk, self->registers[Vx]);
 }
 
 /**
@@ -312,7 +320,9 @@ void Chip8_OP_9xy0(Chip8 *self) {
     self->pc += 2;
   }
 
-  printf("Checking if register Vx 0x%04x != register Vy 0x%04x, skip the next insturction if true.\n", self->registers[Vx], self->registers[Vy]);
+  printf("Checking if register Vx 0x%04x != register Vy 0x%04x, skip the next "
+         "insturction if true.\n",
+         self->registers[Vx], self->registers[Vy]);
 }
 
 /**
@@ -360,7 +370,8 @@ void Chip8_OP_cxkk(Chip8 *self) {
 
   self->registers[Vx] = random_byte & tmp;
 
-  printf("Setting the register Vx 0x%04x = 0x%04x & 0x%04x.\n", self->registers[Vx], random_byte, tmp);
+  printf("Setting the register Vx 0x%04x = 0x%04x & 0x%04x.\n",
+         self->registers[Vx], random_byte, tmp);
 }
 
 /**
@@ -385,25 +396,59 @@ void Chip8_OP_dxyn(Chip8 *self) {
   uint8_t Vx = GET_NIBBLE(self->op_code, 2);
   uint8_t Vy = GET_NIBBLE(self->op_code, 1);
 
-  printf("The coordinates are (%d, %d)\n", self->registers[Vx], self->registers[Vy]);
+  uint8_t x_cord = self->registers[Vx] % CHIP8_SCREEN_WIDTH;
+  uint8_t y_cord = self->registers[Vy] % CHIP8_SCREEN_HEIGHT;
+
+  printf("The coordinates are (%d, %d)\n", self->registers[Vx],
+         self->registers[Vy]);
+
+  self->registers[VF] = 0;
 
   uint8_t sprite = 0;
 
-  uint8_t i;
+  uint8_t sprite_row;
 
-  for (i = 0; i <= num_of_bytes; i++) {
-    sprite = self->memory[self->ir + i];
+  /* for (i = 0; i < num_of_bytes; i++) { */
+  /*   sprite = self->memory[self->ir + i]; */
+  /*   printf("The value of the sprite is 0x%04x.\n", sprite); */
+
+  /*   for (int j = 0; j < 8; j++) { */
+  /*     if ((sprite & (0x80 >> j)) != 0) { */
+  /*       if (self->graphics[(x_cord + i) * CHIP8_SCREEN_WIDTH + (y_cord + j)]
+   * != 0) { */
+  /*         printf("The current graphics pixel at 0x%04x is not zero.\n",
+   * (x_cord + i) * CHIP8_SCREEN_WIDTH + (y_cord + j)); */
+  /*         self->registers[VF] = 1; */
+  /*       } */
+  /*      self->graphics[(x_cord) * CHIP8_SCREEN_WIDTH + (y_cord + i)] ^= 1; */
+  /*     } */
+  /*   } */
+  /* } */
+
+  uint16_t screen_pixel;
+
+  for (sprite_row = 0; sprite_row < num_of_bytes; sprite_row++) {
+    sprite = self->memory[self->ir + sprite_row];
     printf("The value of the sprite is 0x%04x.\n", sprite);
-    for (int j = 0; j < 8; j++) {
-      if ((sprite & (0x80 >> j)) != 0) {
-        if (self->graphics[(self->registers[Vx] + i) * CHIP8_SCREEN_WIDTH + (self->registers[Vy] + j)] != 0) {
-          printf("The current graphics pixel at 0x%04x is not zero.\n", (self->registers[Vx] + i) * CHIP8_SCREEN_WIDTH + (self->registers[Vy] + j));
+
+    for (int sprite_pixel = 0; sprite_pixel < 8; sprite_pixel++) {
+
+      screen_pixel =
+          (x_cord + sprite_row) * CHIP8_SCREEN_WIDTH + (y_cord + sprite_pixel);
+
+      printf("The screen pixel is %d.\n", screen_pixel);
+
+      uint8_t sprite_bit = (sprite & (0x80 >> sprite_pixel));
+      printf("The sprite bit is %x.\n", sprite_bit);
+
+      uint8_t screen_bit = (self->graphics[screen_pixel] & (0x80 >> sprite_pixel));
+      printf("The screen bit is %x.\n", screen_bit);
+
+      if (sprite_bit != 0) {
+        if (screen_bit != 0) {
           self->registers[VF] = 1;
-          self->graphics[(self->registers[Vx] + i) * CHIP8_SCREEN_WIDTH + (self->registers[Vy] + j)] ^= 1;
         }
-      } else {
-        printf("The current graphics pixel at 0x%04x is zero.\n", (self->registers[Vx] + i)  * CHIP8_SCREEN_WIDTH + ((self->registers[Vy] + j)));
-        self->graphics[(self->registers[Vx] + i) * CHIP8_SCREEN_WIDTH + (self->registers[Vy] + j)] = 1;
+        self->graphics[screen_pixel] ^= sprite_bit >> (7 - sprite_pixel);
       }
     }
   }
@@ -420,21 +465,13 @@ void Chip8_OP_dxyn(Chip8 *self) {
   }
   printf("\n");
 
-  for (uint32_t i = 0; i < CHIP8_SCREEN_HEIGHT * CHIP8_SCREEN_WIDTH; i++) {
-    uint8_t y_cord = i % CHIP8_SCREEN_WIDTH;
-    uint8_t x_cord = (i - y_cord) / CHIP8_SCREEN_WIDTH;
-    if (self->graphics[i] == 1) {
-      DrawRectangle(x_cord, y_cord, 20, 20, BLACK);
-    }
-  }
-
-
-
   /* for (int i = 0; i < CHIP8_SCREEN_HEIGHT; i++) { */
   /*   for (int j = 0; j < CHIP8_SCREEN_WIDTH; j++) { */
   /*     if ((self->graphics[j])  == 1) { */
-  /*       printf("The current pixel %d, is %x.\n", j, self->graphics[i * CHIP8_SCREEN_WIDTH + j]); */
-  /*       DrawRectangle(self->registers[Vx] + j, self->registers[Vy] + i, 1 * 20 , 1 * 20 , BLACK); */
+  /*       printf("The current pixel %d, is %x.\n", j, self->graphics[i *
+   * CHIP8_SCREEN_WIDTH + j]); */
+  /*       DrawRectangle(self->registers[Vx] + j, self->registers[Vy] + i, 1 *
+   * 20 , 1 * 20 , BLACK); */
   /*     } */
   /*   } */
   /* } */
@@ -454,7 +491,9 @@ void Chip8_OP_8xy0(Chip8 *self) {
 
   self->registers[Vx] = self->registers[Vy];
 
-  printf("Setting the register Vx 0x%04x to be the same as register Vy 0x%04x\n.", self->registers[Vx], self->registers[Vy]);
+  printf(
+      "Setting the register Vx 0x%04x to be the same as register Vy 0x%04x\n.",
+      self->registers[Vx], self->registers[Vy]);
 }
 
 /**
@@ -473,7 +512,8 @@ void Chip8_OP_8xy1(Chip8 *self) {
 
   self->registers[Vx] = self->registers[Vx] | self->registers[Vy];
 
-  printf("Setting the register Vx 0x%04x to be Vx 0x%04x | Vy 0x%04x\n.", self->registers[Vx], tmp, self->registers[Vy]);
+  printf("Setting the register Vx 0x%04x to be Vx 0x%04x | Vy 0x%04x\n.",
+         self->registers[Vx], tmp, self->registers[Vy]);
 }
 
 /**
@@ -492,7 +532,8 @@ void Chip8_OP_8xy2(Chip8 *self) {
 
   self->registers[Vx] = self->registers[Vx] & self->registers[Vy];
 
-  printf("Setting the register Vx 0x%04x to be Vx 0x%04x & Vy 0x%04x.\n", self->registers[Vx], tmp, self->registers[Vy]);
+  printf("Setting the register Vx 0x%04x to be Vx 0x%04x & Vy 0x%04x.\n",
+         self->registers[Vx], tmp, self->registers[Vy]);
 }
 
 /**
@@ -526,7 +567,7 @@ void Chip8_OP_8xy4(Chip8 *self) {
 
   uint16_t tmp = self->registers[Vx] + self->registers[Vy];
 
-  self->registers[Vx] = self->registers[Vx] + self->registers[Vy];
+  self->registers[Vx] = tmp;
 
   if (tmp > 255) {
     self->registers[VF] = 1;
@@ -810,9 +851,10 @@ void Chip8_OP_fx1e(Chip8 *self) {
  */
 void Chip8_OP_fx29(Chip8 *self) {
   uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  self->ir = FONTSET_START_ADDRESS +  self->registers[Vx];
+  self->ir = FONTSET_START_ADDRESS + self->registers[Vx];
 
-  printf("Setting the IR to 0x%04x as the value of the Vx is 0x%04x.\n", self->ir, self->registers[Vx]);
+  printf("Setting the IR to 0x%04x as the value of the Vx is 0x%04x.\n",
+         self->ir, self->registers[Vx]);
 }
 
 /**

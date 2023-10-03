@@ -1,0 +1,14 @@
+#+title: Code Debugging
+
+* How does the Draw instruction works?
+1. The coordinates are loaded from the registers corresponding to the values of ~Vx~ and ~Vy~.
+2. X-Y coordinates are then translated into the starting index of the 1D array using the /row major/ formula ~X * Screen Width + Y~.
+   This index will be used to hold the first bit of the sprite, and then incremented to hold the rest.
+3. The sprite value is loaded from memory address pointed by the Index Register into a local variable.
+4. Check over every bit of the sprite.
+   This is done by ~(sprite & (0x80 >> sprite_pixel))~ such that the sprite_pixel is the bit we want to check.
+5. If the bit is ~1~:
+   We check the screen buffer index (calculated from step 2), if it's ~1~:
+   Raise the VF flag.
+6. Sprite bit XOR Screen bit.
+7. Else if the sprite's bit is ~0~ do nothing.
