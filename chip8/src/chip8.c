@@ -405,58 +405,70 @@ void Chip8_OP_dxyn(Chip8 *self) {
   self->registers[VF] = 0;
 
   uint8_t sprite = 0;
+  uint8_t x_current;
+  uint8_t y_current;
 
-  uint8_t sprite_row;
+  for (uint8_t y_offset = 0; y_offset < num_of_bytes; y_offset++) {
+    sprite = self->memory[self->ir + y_offset];
+    printf("The loaded sprite is 0x%04X\n", sprite);
 
-  /* for (i = 0; i < num_of_bytes; i++) { */
-  /*   sprite = self->memory[self->ir + i]; */
-  /*   printf("The value of the sprite is 0x%04x.\n", sprite); */
+    for (int x_offset = 0; x_offset < 8; x_offset++) {
+      x_current = x_cord + x_offset;
+      y_current = y_cord + y_offset;
+      printf("The current coordinates (%d, %d)\n", x_current, y_current);
 
-  /*   for (int j = 0; j < 8; j++) { */
-  /*     if ((sprite & (0x80 >> j)) != 0) { */
-  /*       if (self->graphics[(x_cord + i) * CHIP8_SCREEN_WIDTH + (y_cord + j)]
-   * != 0) { */
-  /*         printf("The current graphics pixel at 0x%04x is not zero.\n",
-   * (x_cord + i) * CHIP8_SCREEN_WIDTH + (y_cord + j)); */
-  /*         self->registers[VF] = 1; */
-  /*       } */
-  /*      self->graphics[(x_cord) * CHIP8_SCREEN_WIDTH + (y_cord + i)] ^= 1; */
-  /*     } */
-  /*   } */
-  /* } */
+      uint8_t screen_bit = self->graphics[x_current][y_current];
+      printf("The current state of the screen is %d\n", screen_bit);
 
-  uint16_t screen_pixel;
-
-  for (sprite_row = 0; sprite_row < num_of_bytes; sprite_row++) {
-    sprite = self->memory[self->ir + sprite_row];
-    printf("The value of the sprite is 0x%04x.\n", sprite);
-
-    for (int sprite_pixel = 0; sprite_pixel < 8; sprite_pixel++) {
-
-      screen_pixel =
-          (x_cord + sprite_row) * CHIP8_SCREEN_WIDTH + (y_cord + sprite_pixel);
-
-      printf("The screen pixel is %d.\n", screen_pixel);
-
-      uint8_t sprite_bit = (sprite & (0x80 >> sprite_pixel));
-      printf("The sprite bit is %x.\n", sprite_bit);
-
-      uint8_t screen_bit = (self->graphics[screen_pixel] & (0x80 >> sprite_pixel));
-      printf("The screen bit is %x.\n", screen_bit);
-
-      if (sprite_bit != 0) {
-        if (screen_bit != 0) {
+      uint8_t sprite_bit = (sprite & (0x80 >> x_offset)) >> (7 - x_offset);
+      printf("The current sprite bit is %x\n", sprite_bit);
+      if (sprite_bit == 1) {
+        if (screen_bit == 1) {
           self->registers[VF] = 1;
         }
-        self->graphics[screen_pixel] ^= sprite_bit >> (7 - sprite_pixel);
+        self->graphics[x_current][y_current] ^= 1;
       }
     }
   }
 
+
+
+
+  /* uint8_t sprite_row; */
+  /* uint16_t screen_pixel; */
+
+  /* for (sprite_row = 0; sprite_row < num_of_bytes; sprite_row++) { */
+  /*   sprite = self->memory[self->ir + sprite_row]; */
+  /*   printf("The value of the sprite is 0x%04x.\n", sprite); */
+
+  /*   for (int sprite_pixel = 0; sprite_pixel < 8; sprite_pixel++) { */
+
+  /*     screen_pixel = */
+  /*         ((x_cord + sprite_row) % CHIP8_SCREEN_HEIGHT) * CHIP8_SCREEN_WIDTH + ((y_cord + sprite_pixel) % CHIP8_SCREEN_HEIGHT); */
+
+  /*     printf("The screen pixel is %d.\n", screen_pixel); */
+
+  /*     uint8_t sprite_bit = (sprite & (0x80 >> sprite_pixel)); */
+  /*     printf("The sprite bit is %x.\n", sprite_bit); */
+
+  /*     uint8_t screen_bit = (self->graphics[screen_pixel] & (0x80 >> sprite_pixel)); */
+  /*     printf("The screen bit is %x.\n", screen_bit); */
+
+  /*     if (sprite_bit != 0) { */
+  /*       if (screen_bit != 0) { */
+  /*         self->registers[VF] = 1; */
+  /*       } */
+  /*       self->graphics[screen_pixel] ^= sprite_bit >> (7 - sprite_pixel); */
+  /*     } */
+  /*   } */
+  /* } */
+
   int x = 0;
   printf("Dumping the graphics:\n");
-  for (int i = 0; i < CHIP8_SCREEN_HEIGHT * CHIP8_SCREEN_WIDTH; i++) {
-    printf("0x%04x\t", self->graphics[i]);
+  for (int i = 0; i < CHIP8_SCREEN_WIDTH; i++) {
+    for (int j = 0; j < CHIP8_SCREEN_HEIGHT; j++) {
+      printf("0x%04x\t", self->graphics[i][j]);
+    }
     x++;
     if (x == 8) {
       printf("\n");
@@ -464,18 +476,6 @@ void Chip8_OP_dxyn(Chip8 *self) {
     }
   }
   printf("\n");
-
-  /* for (int i = 0; i < CHIP8_SCREEN_HEIGHT; i++) { */
-  /*   for (int j = 0; j < CHIP8_SCREEN_WIDTH; j++) { */
-  /*     if ((self->graphics[j])  == 1) { */
-  /*       printf("The current pixel %d, is %x.\n", j, self->graphics[i *
-   * CHIP8_SCREEN_WIDTH + j]); */
-  /*       DrawRectangle(self->registers[Vx] + j, self->registers[Vy] + i, 1 *
-   * 20 , 1 * 20 , BLACK); */
-  /*     } */
-  /*   } */
-  /* } */
-
   printf("Drawing.\n");
 }
 

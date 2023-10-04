@@ -20,7 +20,7 @@ typedef struct chip8 {
   uint8_t memory[4096];
   uint16_t pc;
   uint16_t ir;
-  uint8_t graphics[CHIP8_SCREEN_HEIGHT * CHIP8_SCREEN_WIDTH];
+  uint8_t graphics[CHIP8_SCREEN_WIDTH][CHIP8_SCREEN_HEIGHT];
   uint16_t stack[16];
   uint8_t sp;
   uint8_t delay_timer;

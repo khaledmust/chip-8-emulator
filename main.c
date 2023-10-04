@@ -31,10 +31,11 @@ int main(int argc, char **argv)
         ClearBackground(GREEN);
         chip8_inst_emulate(&myChip);
 
-        for (uint16_t i = 0; i < CHIP8_SCREEN_HEIGHT * CHIP8_SCREEN_WIDTH; i++) {
-            if (myChip.graphics[i] == 1) {
-                DrawRectangle((uint8_t)(i % CHIP8_SCREEN_WIDTH), (uint8_t)(i / CHIP8_SCREEN_WIDTH), 1, 1, BLACK);
-                printf("The coordinates are %d, %d.\n", i / CHIP8_SCREEN_WIDTH, i % CHIP8_SCREEN_WIDTH);
+        for (int i = 0; i < CHIP8_SCREEN_HEIGHT; i++) {
+            for (int j = 0; j < CHIP8_SCREEN_WIDTH; j++) {
+                if (myChip.graphics[j][i] == 1) {
+                    DrawRectangle(j, i, 1, 1, BLACK);
+                }
             }
         }
 
