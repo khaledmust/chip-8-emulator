@@ -1,0 +1,17 @@
+#+title: Chip8 Tutorial
+#+author: Khaled Mustafa
+
+* Introduction
+- I you already know what an emulator is, and have already implemented your Chip-8 emulator, and you're wondering why another tutorial in implementing a Chip-8 emulator?
+- Then the answer is simply because I can, and this is my emulator, mine.
+- The second thing all the tutorial that I have encountered are using SDL as their graphics library, while I have used RayLib, why you would ask, it's because RayLib is much more simpler and straightforward, it doesn't need a tutorial to start using it, all of its instrations are summarized in this cheatsheet.
+*  What is an emulator?
+- We should start by first defining the problem, and then the solution, and not jumping directly to solution.
+- Imagine if you have an old software that was written for an old hardware that is no longer being manufactured, and you want to utilize that software, what would you do?
+- But why won't it run in the first place?
+  This comes back to the binaries that were compiled from the source code, so the processor that is going to execute your program, it doesn't understand C or Python, it understand only it's Instruction Sets.
+  So we /Compile/ the software that is written in /High-level language/ to what is known as /Low-level language/ and this is hardware dependent language, that means if a software that is compiled to run on an ARM based architecture, it won't be able to run on an x86 based architecture.
+- Back to the solution:
+  - You have multiple solutions, either you get your hand on the source code of the software you want to use, and recompile it to your specific machine, or you get your hands on the actual hardware machine that was used to run the software back in the days, or (and this is where we come in) write yourself an "emulator" that emulates the whole machine on your current machine.
+  - What does that mean you ask?
+    Well, you are going to create yourself a kind of "Virtual Machine" that will mimic the actual hardware machine in every aspect, such that when the software you want to run is being executed on it, it won't see any difference and won't feel that it's being run in a virtual environment.

@@ -3,10 +3,10 @@
 
 #include "chip8.h"
 
-#define OFFSET 386
+#define OFFSET 200
 
-#define screenWidth CHIP8_SCREEN_WIDTH + OFFSET
-#define screenHeight CHIP8_SCREEN_HEIGHT + OFFSET
+#define screenWidth CHIP8_SCREEN_WIDTH * 10
+#define screenHeight CHIP8_SCREEN_HEIGHT * 10
 
 typedef struct{
     Chip8 chip8;

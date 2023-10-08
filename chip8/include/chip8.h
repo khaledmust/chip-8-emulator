@@ -15,6 +15,8 @@
 /* Macro to extract a specific nibble (0-7) from a hex value */
 #define GET_NIBBLE(hexValue, index) (((hexValue) >> ((index) * 4)) & 0xF)
 
+#define X_NIBBLE 2
+
 typedef struct chip8 {
   uint8_t registers[16];
   uint8_t memory[4096];
