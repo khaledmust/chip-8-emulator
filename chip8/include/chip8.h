@@ -16,6 +16,9 @@
 #define GET_NIBBLE(hexValue, index) (((hexValue) >> ((index) * 4)) & 0xF)
 
 #define X_NIBBLE 2
+#define Y_NIBBLE 1
+
+#define SPECIFIED_TIME 0.0166
 
 typedef struct chip8 {
   uint8_t registers[16];
@@ -57,5 +60,8 @@ int chip8_init(Chip8 *self);
 int chip8_load_rom(Chip8 *self, char *usr_rom_name);
 void chip8_parse_code(Chip8 *self);
 void chip8_inst_emulate(Chip8 *self);
+void chip8_keyboard_control(Chip8 *self);
+void chip8_draw(Chip8 *self, Rectangle *pixel);
+void chip8_timer_control(Chip8 *self);
 
 #endif // CHIP8_H_

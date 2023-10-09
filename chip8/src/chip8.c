@@ -226,7 +226,7 @@ void Chip8_OP_2nnn(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_3xkk(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t kk = self->op_code & 0x00FF;
 
   if (self->registers[Vx] == kk) {
@@ -246,7 +246,7 @@ void Chip8_OP_3xkk(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_4xkk(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t kk = self->op_code & 0x00FF;
 
   if (self->registers[Vx] != kk) {
@@ -267,8 +267,8 @@ void Chip8_OP_4xkk(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_5xy0(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   if (self->registers[Vx] == self->registers[Vy]) {
     self->pc += 2;
@@ -286,7 +286,7 @@ void Chip8_OP_5xy0(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_6xkk(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t kk = self->op_code & 0x00FF;
 
   self->registers[Vx] = kk;
@@ -302,7 +302,7 @@ void Chip8_OP_6xkk(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_7xkk(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t kk = self->op_code & 0x00FF;
 
   self->registers[Vx] += kk;
@@ -320,8 +320,8 @@ void Chip8_OP_7xkk(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_9xy0(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   if (self->registers[Vx] != self->registers[Vy]) {
     self->pc += 2;
@@ -373,7 +373,7 @@ void Chip8_OP_cxkk(Chip8 *self) {
   uint8_t tmp = self->op_code & 0x00FF;
   uint8_t random_byte = (uint8_t)GetRandomValue(0, 255);
 
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   self->registers[Vx] = random_byte & tmp;
 
@@ -400,8 +400,8 @@ void Chip8_OP_dxyn(Chip8 *self) {
   /* Number of bytes to be read from memory. */
   uint8_t num_of_bytes = GET_NIBBLE(self->op_code, 0);
 
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint8_t x_cord = self->registers[Vx] % CHIP8_SCREEN_WIDTH;
   uint8_t y_cord = self->registers[Vy] % CHIP8_SCREEN_HEIGHT;
@@ -438,25 +438,25 @@ void Chip8_OP_dxyn(Chip8 *self) {
     }
   }
 
-  int x = 0;
-  int y = 0;
-  printf("Dumping the graphics:\n");
-  for (int i = 0; i < CHIP8_SCREEN_WIDTH; i++) {
-    for (int j = 0; j < CHIP8_SCREEN_HEIGHT; j++) {
-      printf("0x%04x\t", self->graphics[i][j]);
-      y++;
-      if (y == 8) {
-      printf("\n");
-      y = 0;
-      }
-    }
-    x++;
-    if (x == 8) {
-      printf("\n");
-      x = 0;
-    }
-  }
-  printf("\n");
+  /* int x = 0; */
+  /* int y = 0; */
+  /* printf("Dumping the graphics:\n"); */
+  /* for (int i = 0; i < CHIP8_SCREEN_WIDTH; i++) { */
+  /*   for (int j = 0; j < CHIP8_SCREEN_HEIGHT; j++) { */
+  /*     printf("0x%04x\t", self->graphics[i][j]); */
+  /*     y++; */
+  /*     if (y == 8) { */
+  /*     printf("\n"); */
+  /*     y = 0; */
+  /*     } */
+  /*   } */
+  /*   x++; */
+  /*   if (x == 8) { */
+  /*     printf("\n"); */
+  /*     x = 0; */
+  /*   } */
+  /* } */
+//  printf("\n");
   printf("Drawing.\n");
 }
 
@@ -467,8 +467,8 @@ void Chip8_OP_dxyn(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy0(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   self->registers[Vx] = self->registers[Vy];
 
@@ -486,8 +486,8 @@ void Chip8_OP_8xy0(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy1(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -506,8 +506,8 @@ void Chip8_OP_8xy1(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy2(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -526,8 +526,8 @@ void Chip8_OP_8xy2(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy3(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   self->registers[Vx] ^= self->registers[Vy];
 
@@ -543,8 +543,8 @@ void Chip8_OP_8xy3(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy4(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint16_t tmp = self->registers[Vx] + self->registers[Vy];
 
@@ -568,8 +568,8 @@ void Chip8_OP_8xy4(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy5(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -593,7 +593,7 @@ void Chip8_OP_8xy5(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy6(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -617,8 +617,8 @@ void Chip8_OP_8xy6(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xy7(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
-  uint8_t Vy = GET_NIBBLE(self->op_code, 1);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
+  uint8_t Vy = GET_NIBBLE(self->op_code, Y_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -642,7 +642,7 @@ void Chip8_OP_8xy7(Chip8 *self) {
  * @param A pointer to the Chip8 object.
  */
 void Chip8_OP_8xye(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   uint8_t tmp = self->registers[Vx];
 
@@ -709,7 +709,7 @@ void Chip8_extract_and_call_8xxx(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_exa1(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   if (self->keypad[self->registers[Vx] & 0xf] == 0) {
     self->pc += 2;
@@ -725,7 +725,7 @@ void Chip8_OP_exa1(Chip8 *self) {
  * @param self A pointer to to the Chip8 object.
  */
 void Chip8_OP_ex9e(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   if (self->keypad[self->registers[Vx] & 0xf] == 1) {
     self->pc += 2;
@@ -762,7 +762,7 @@ void Chip8_extract_and_call_exxx(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx07(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
 
   self->registers[Vx] = self->delay_timer;
 }
@@ -777,7 +777,7 @@ void Chip8_OP_fx07(Chip8 *self) {
  */
 void Chip8_OP_fx0a(Chip8 *self) {
   printf("Entering the keypad checking function.\n");
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   self->registers[Vx] = 0;
 
   uint8_t i;
@@ -801,7 +801,7 @@ void Chip8_OP_fx0a(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx15(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   self->delay_timer = self->registers[Vx];
 }
 
@@ -813,7 +813,7 @@ void Chip8_OP_fx15(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx18(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   self->sound_timer = self->registers[Vx];
 }
 
@@ -825,7 +825,7 @@ void Chip8_OP_fx18(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx1e(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   self->ir += self->registers[Vx];
 }
 
@@ -840,7 +840,7 @@ void Chip8_OP_fx1e(Chip8 *self) {
  * TODO Make sure that this function operates correctly.
  */
 void Chip8_OP_fx29(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   self->ir = ((self->registers[Vx] & 0xf) * 5) + FONTSET_START_ADDRESS;
 
   printf("Setting the IR to 0x%04x as the value of the Vx is 0x%04x.\n",
@@ -857,7 +857,7 @@ void Chip8_OP_fx29(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx33(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t tmp_value = self->registers[Vx];
 
   /* Ones places */
@@ -881,7 +881,7 @@ void Chip8_OP_fx33(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx55(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t i = 0;
 
   for (i = 0; i <= Vx; i++) {
@@ -898,7 +898,7 @@ void Chip8_OP_fx55(Chip8 *self) {
  * @param self A pointer to the Chip8 object.
  */
 void Chip8_OP_fx65(Chip8 *self) {
-  uint8_t Vx = GET_NIBBLE(self->op_code, 2);
+  uint8_t Vx = GET_NIBBLE(self->op_code, X_NIBBLE);
   uint8_t i;
 
   for (i = 0; i <= Vx; i++) {
@@ -979,4 +979,133 @@ function chip8_instructions[16] = {Chip8_extract_and_call_0xxx,
  */
 void chip8_inst_emulate(Chip8 *self) {
   chip8_instructions[GET_NIBBLE(self->op_code, 3)](self);
+}
+
+
+void chip8_keyboard_control(Chip8 *self) {
+  for (int i = 0; i < 16; i++) {
+    printf("The state of the keyboard is %d.\n", self->keypad[i]);
+  }
+
+  if (IsKeyDown(KEY_X)) {
+    self->keypad[0] = 1;
+  } else {
+    self->keypad[0] = 0;
+  }
+
+  if (IsKeyDown(KEY_ONE)) {
+    self->keypad[1] = 1;
+  } else {
+    self->keypad[1] = 0;
+  }
+
+  if (IsKeyDown(KEY_TWO)) {
+    self->keypad[2] = 1;
+  } else {
+    self->keypad[2] = 0;
+  }
+
+  if (IsKeyDown(KEY_THREE)) {
+    self->keypad[3] = 1;
+  } else {
+    self->keypad[3] = 0;
+  }
+
+  if (IsKeyDown(KEY_Q)) {
+    self->keypad[4] = 1;
+  } else {
+    self->keypad[4] = 0;
+  }
+
+  if (IsKeyDown(KEY_W)) {
+    self->keypad[5] = 1;
+  } else {
+    self->keypad[5] = 0;
+  }
+
+  if (IsKeyDown(KEY_E)) {
+    self->keypad[6] = 1;
+  } else {
+    self->keypad[6] = 0;
+  }
+
+  if (IsKeyDown(KEY_A)) {
+    self->keypad[7] = 1;
+  } else {
+    self->keypad[7] = 0;
+  }
+
+  if (IsKeyDown(KEY_S)) {
+    self->keypad[8] = 1;
+  } else {
+    self->keypad[8] = 0;
+  }
+
+  if (IsKeyDown(KEY_D)) {
+    self->keypad[9] = 1;
+  } else {
+    self->keypad[9] = 0;
+  }
+
+  if (IsKeyDown(KEY_Z)) {
+    self->keypad[10] = 1;
+  } else {
+    self->keypad[10] = 0;
+  }
+
+  if (IsKeyDown(KEY_C)) {
+    self->keypad[11] = 1;
+  } else {
+    self->keypad[11] = 0;
+  }
+
+  if (IsKeyDown(KEY_FOUR)) {
+    self->keypad[12] = 1;
+  } else {
+    self->keypad[12] = 0;
+  }
+
+  if (IsKeyDown(KEY_R)) {
+    self->keypad[13] = 1;
+  } else {
+    self->keypad[13] = 0;
+  }
+
+  if (IsKeyDown(KEY_F)) {
+    self->keypad[14] = 1;
+  } else {
+    self->keypad[14] = 0;
+  }
+
+  if (IsKeyDown(KEY_V)) {
+    self->keypad[15] = 1;
+  } else {
+    self->keypad[15] = 0;
+  }
+}
+
+void chip8_draw(Chip8 *self, Rectangle *pixel) {
+  for (int i = 0; i < CHIP8_SCREEN_HEIGHT; i++) {
+    for (int j = 0; j < CHIP8_SCREEN_WIDTH; j++) {
+      if (self->graphics[j][i] == 1) {
+      pixel->x = j * 10;
+      pixel->y = i * 10;
+      DrawRectangleRounded(*pixel, 0.1, 6, BLACK);
+      }
+    }
+  }
+}
+
+double current_time;
+double last_update_time;
+
+void chip8_timer_control(Chip8 *self) {
+  current_time = GetTime();
+  printf("The current time: %lf\n", current_time);
+  if (current_time - last_update_time >= SPECIFIED_TIME) {
+    if (self->delay_timer > 0) {
+      self->delay_timer--;
+    }
+    last_update_time = current_time;
+  }
 }
