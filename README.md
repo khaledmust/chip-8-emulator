@@ -65,8 +65,11 @@ All those instructions are implemented in the `chip8.c` file.
 The emulator starts by calling `chip8_parse_code` function, this function first parses 8-bits of opcode and then increment the PC to point
 to the next 8-bits opcode which is then`OR` to the previous one to form 16-bits instruction.
 
+![chip-8 parsing opcode](https://github.com/khaledmust/chip-8-emulator/blob/main/chip-8-parsing-opcode.png)
+
 Then the function `chip8_inst_emulate` is called which executes the opcode by first, calling an array of function pointer, then, executing the function the corresponds to the extracted nibble from the opcode.
 
+![chip-8 instruction table](https://github.com/khaledmust/chip-8-emulator/blob/main/chip-8-instruction-table.png)
 
 ## License
 This project is open source and available under the MIT License.
