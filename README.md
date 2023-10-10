@@ -4,12 +4,10 @@ This Chip-8 emulator is implemented in C, leveraging the RayLib library for grap
 
 ## Table of Contents
 - [Introduction](#introduction)
-- [Features](#features)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Technical Implementation](#technical-implementation)
 - [Screenshots](#screenshots)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
@@ -54,7 +52,26 @@ make
 
 ## Usage
 
+The Chip-8 keypad has been mapped to the following keys:
+
+``` text
+Keypad                   Keyboard
++-+-+-+-+                +-+-+-+-+
+|1|2|3|C|                |1|2|3|4|
++-+-+-+-+                +-+-+-+-+
+|4|5|6|D|                |Q|W|E|R|
++-+-+-+-+       =>       +-+-+-+-+
+|7|8|9|E|                |A|S|D|F|
++-+-+-+-+                +-+-+-+-+
+|A|0|B|F|                |Z|X|C|V|
++-+-+-+-+                +-+-+-+-+
+```
+
 ## Technical Implementation
+
+### Chip-8 Memory Layout
+
+![chip-8 memory layout](https://github.com/khaledmust/chip-8-emulator/blob/main/chip-8-memory-layout.png)
 
 ### Chip-8 Instructions
 
@@ -70,6 +87,18 @@ to the next 8-bits opcode which is then`OR` to the previous one to form 16-bits 
 Then the function `chip8_inst_emulate` is called which executes the opcode by first, calling an array of function pointer, then, executing the function the corresponds to the extracted nibble from the opcode.
 
 ![chip-8 instruction table](https://github.com/khaledmust/chip-8-emulator/blob/main/chip-8-instruction-table.png)
+
+## Screenshots
+
+![](https://github.com/khaledmust/chip-8-emulator/blob/main/screenshots/Screenshot%20from%202023-10-10%2012-16-07.png)
+
+![](https://github.com/khaledmust/chip-8-emulator/blob/main/screenshots/Screenshot%20from%202023-10-10%2012-16-23.png)
+
+![](https://github.com/khaledmust/chip-8-emulator/blob/main/screenshots/Screenshot%20from%202023-10-10%2012-16-35.png)
+
+![](https://github.com/khaledmust/chip-8-emulator/blob/main/screenshots/Screenshot%20from%202023-10-10%2012-17-20.png)
+
+![](https://github.com/khaledmust/chip-8-emulator/blob/main/screenshots/Screenshot%20from%202023-10-10%2012-18-46.png)
 
 ## License
 This project is open source and available under the MIT License.
